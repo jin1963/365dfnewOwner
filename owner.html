@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>365DF - Owner Admin DApp</title>
+  <link rel="stylesheet" href="owner_style.css" />
+
+  <!-- ethers v5 -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+  <!-- owner config MUST come before owner.js -->
+  <script src="owner_config.js"></script>
+  <script defer src="owner.js"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div>
+        <h1>365DF Owner Admin DApp</h1>
+        <div class="sub">CoreV5 + VaultV6 + BinaryV4 + StakingV4</div>
+      </div>
+
+      <div class="topRight">
+        <button id="btnConnect" class="btn primary">Connect Wallet</button>
+        <div class="mini">
+          <div><span class="muted">Wallet:</span> <span id="walletAddr" class="mono">-</span></div>
+          <div><span class="muted">Network:</span> <span id="netText" class="mono">-</span></div>
+          <div><span class="muted">Status:</span> <span id="status" class="pill">Ready.</span></div>
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="title">Contracts</div>
+      <div class="grid2">
+        <div>
+          <div class="kv"><span>CoreV5</span><span id="coreAddr" class="mono">-</span></div>
+          <div class="kv"><span>VaultV6</span><span id="vaultAddr" class="mono">-</span></div>
+        </div>
+        <div>
+          <div class="kv"><span>BinaryV4</span><span id="binaryAddr" class="mono">-</span></div>
+          <div class="kv"><span>StakingV4</span><span id="stakingAddr" class="mono">-</span></div>
+        </div>
+      </div>
+      <div class="hint">This page is for contract owner/admin only.</div>
+    </section>
+
+    <section class="card">
+      <div class="title">Owner Check</div>
+      <div class="grid2">
+        <div class="box">
+          <div class="kv"><span>Core Owner</span><span id="coreOwner" class="mono">-</span></div>
+          <div class="kv"><span>Vault Owner</span><span id="vaultOwner" class="mono">-</span></div>
+        </div>
+        <div class="box">
+          <div class="kv"><span>Binary Owner</span><span id="binaryOwner" class="mono">-</span></div>
+          <div class="kv"><span>Staking Owner</span><span id="stakingOwner" class="mono">-</span></div>
+        </div>
+      </div>
+      <div class="row">
+        <button id="btnRefresh" class="btn">Refresh Owner Data</button>
+        <span id="dashStatus" class="pill">-</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="title">Set Links (Core / MLM)</div>
+
+      <div class="grid2">
+        <div class="box">
+          <div class="label">Set Vault Core</div>
+          <div class="row">
+            <input id="inpSetVaultCore" class="inp mono" placeholder="Core address (default = CoreV5)" />
+            <button id="btnSetVaultCore" class="btn primary">Set</button>
+          </div>
+          <div class="hint">Calls: VaultV6.setCore(core)</div>
+        </div>
+
+        <div class="box">
+          <div class="label">Set Binary Core</div>
+          <div class="row">
+            <input id="inpSetBinaryCore" class="inp mono" placeholder="Core address (default = CoreV5)" />
+            <button id="btnSetBinaryCore" class="btn primary">Set</button>
+          </div>
+          <div class="hint">Calls: BinaryV4.setCore(core)</div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="label">Set Staking MLM</div>
+        <div class="row">
+          <input id="inpSetStakingMLM" class="inp mono" placeholder="Core address (default = CoreV5)" />
+          <button id="btnSetStakingMLM" class="btn primary">Set</button>
+        </div>
+        <div class="hint">Calls: StakingV4.setMLM(core)</div>
+      </div>
+
+      <div class="row">
+        <span id="linkStatus" class="pill">-</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="title">Withdraw Surplus (Vault / Staking)</div>
+
+      <div class="grid2">
+        <div class="box">
+          <div class="kv"><span>Vault Surplus USDT</span><span id="surplusUSDT" class="mono">-</span></div>
+          <div class="row">
+            <input id="inpToUSDT" class="inp mono" placeholder="to address" />
+            <input id="inpAmtUSDT" class="inp mono" placeholder="amount USDT (e.g. 10)" />
+            <button id="btnWithdrawUSDT" class="btn primary">Withdraw USDT</button>
+          </div>
+          <div class="hint">Calls: VaultV6.withdrawSurplusUSDT(to, amount)</div>
+        </div>
+
+        <div class="box">
+          <div class="kv"><span>Vault Surplus DF</span><span id="surplusDF" class="mono">-</span></div>
+          <div class="row">
+            <input id="inpToDF" class="inp mono" placeholder="to address" />
+            <input id="inpAmtDF" class="inp mono" placeholder="amount DF (e.g. 100)" />
+            <button id="btnWithdrawDF" class="btn primary">Withdraw DF</button>
+          </div>
+          <div class="hint">Calls: VaultV6.withdrawSurplusDF(to, amount)</div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="label">Owner Withdraw DF (Staking)</div>
+        <div class="row">
+          <input id="inpToStakeDF" class="inp mono" placeholder="to address" />
+          <input id="inpAmtStakeDF" class="inp mono" placeholder="amount DF (e.g. 100)" />
+          <button id="btnOwnerWithdrawStakeDF" class="btn primary">Withdraw DF (Staking)</button>
+        </div>
+        <div class="hint">Calls: StakingV4.ownerWithdrawDF(to, amount)</div>
+      </div>
+
+      <div class="row">
+        <span id="wdStatus" class="pill">-</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="title">Transfer Ownership</div>
+
+      <div class="grid2">
+        <div class="box">
+          <div class="label">Transfer Core Ownership</div>
+          <div class="row">
+            <input id="inpNewOwnerCore" class="inp mono" placeholder="new owner address" />
+            <button id="btnTransferCore" class="btn primary">Transfer</button>
+          </div>
+          <div class="hint">Calls: CoreV5.transferOwnership(newOwner)</div>
+        </div>
+
+        <div class="box">
+          <div class="label">Transfer Vault Ownership</div>
+          <div class="row">
+            <input id="inpNewOwnerVault" class="inp mono" placeholder="new owner address" />
+            <button id="btnTransferVault" class="btn primary">Transfer</button>
+          </div>
+          <div class="hint">Calls: VaultV6.transferOwnership(newOwner)</div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="box">
+          <div class="label">Transfer Binary Ownership</div>
+          <div class="row">
+            <input id="inpNewOwnerBinary" class="inp mono" placeholder="new owner address" />
+            <button id="btnTransferBinary" class="btn primary">Transfer</button>
+          </div>
+          <div class="hint">Calls: BinaryV4.transferOwnership(newOwner)</div>
+        </div>
+
+        <div class="box">
+          <div class="label">Transfer Staking Ownership</div>
+          <div class="row">
+            <input id="inpNewOwnerStaking" class="inp mono" placeholder="new owner address" />
+            <button id="btnTransferStaking" class="btn primary">Transfer</button>
+          </div>
+          <div class="hint">Calls: StakingV4.transferOwnership(newOwner)</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <span id="ownStatus" class="pill">-</span>
+      </div>
+    </section>
+
+    <footer class="foot">
+      Open in MetaMask/Bitget DApp Browser • Owner Admin Page
+    </footer>
+  </div>
+
+  <div id="toast" class="toast">-</div>
+</body>
+</html>
